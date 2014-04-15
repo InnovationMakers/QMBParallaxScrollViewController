@@ -17,7 +17,7 @@
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIView *foregroundView;
-@property (nonatomic, strong) UIScrollView *backgroundScrollView;
+//@property (nonatomic, strong) UIScrollView *backgroundScrollView;
 @property (nonatomic, strong) UIScrollView *foregroundScrollView;
 
 @property (nonatomic, strong) UITapGestureRecognizer *topViewGestureRecognizer;
@@ -74,11 +74,14 @@
     [self setMaxHeightBorder:MAX(1.5f*_topHeight, 300.0f)];
     [self setMinHeightBorder:_maxHeight-20.0f];
     
+    /*Map*/
     [self addChildViewController:self.topViewController];
     _backgroundView = topViewController.view;
-    [_backgroundScrollView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    //[_backgroundScrollView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [_backgroundView setClipsToBounds:YES];
     
+    
+    /*Table*/
     [self addChildViewController:self.bottomViewController];
     _foregroundView = bottomViewController.view;
     
@@ -91,12 +94,12 @@
     [_foregroundScrollView setAlwaysBounceVertical:YES];
     _foregroundScrollView.frame = self.view.frame;
     [_foregroundScrollView addSubview:_foregroundView];
-    
-    [self.view addSubview:_foregroundScrollView];
-    [self.bottomViewController didMoveToParentViewController:self];
-    
     [self.view addSubview:_backgroundView];
+    [self.view addSubview:_foregroundScrollView];
+    
+
     [self.topViewController didMoveToParentViewController:self];
+    [self.bottomViewController didMoveToParentViewController:self];
     
     [self addGestureReconizer];
     
@@ -171,6 +174,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     [self updateContentOffset];
+    [self updateForegroundFrame];
     if ([self.scrollViewDelegate respondsToSelector:_cmd]) {
         [self.scrollViewDelegate scrollViewDidScroll:scrollView];
     }
@@ -219,9 +223,14 @@
         self.foregroundScrollView.contentSize = size;
     }else {
         self.foregroundView.frame = CGRectMake(0.0f,
-                                               _topHeight,
+                                               self.foregroundScrollView.contentOffset.y,
                                                self.foregroundView.frame.size.width,
                                                self.foregroundView.frame.size.height);
+        self.foregroundScrollView.frame = CGRectMake(0.0f,
+                                               (_topHeight+(-1)*self.foregroundScrollView.contentOffset.y),
+                                               self.foregroundView.frame.size.width,
+                                               self.foregroundView.frame.size.height);
+        
         self.foregroundScrollView.contentSize =
         CGSizeMake(self.view.frame.size.width,
                    self.foregroundView.frame.size.height + _topHeight);
@@ -245,11 +254,12 @@
     }
     _lastOffsetY = self.foregroundScrollView.contentOffset.y;
     
-    self.backgroundView.frame =
-    CGRectMake(0.0f,0.0f,self.view.frame.size.width,_topHeight+(-1)*self.foregroundScrollView.contentOffset.y);
+    
+//    self.backgroundView.frame =
+//    CGRectMake(0.0f,0.0f,self.view.frame.size.width,_topHeight+(-1)*self.foregroundScrollView.contentOffset.y);
     
     [self.backgroundView layoutIfNeeded];
-
+    
     
     if (_isAnimating){
         return;
@@ -264,7 +274,6 @@
         [self showFullTopView:NO];
         return;
     }
-    
     
 }
 

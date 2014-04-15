@@ -95,6 +95,8 @@ typedef NS_ENUM(NSUInteger, QMBParallaxGesture) {
 // inits
 -(void) setupWithTopViewController:(UIViewController *)topViewController andTopHeight:(CGFloat)height andBottomViewController:(UIViewController *)bottomViewController;
 
+- (void)setBackgroundHeight:(CGFloat)backgroundHeight;
+- (void) showFullTopView:(BOOL)show;
 
 // configs
 
