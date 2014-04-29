@@ -271,7 +271,10 @@
     }
     
     if (!_isAnimating && self.lastGesture == QMBParallaxGestureScrollsUp && -_foregroundView.frame.origin.y + self.foregroundScrollView.contentOffset.y > -_minHeightBorder && self.state == QMBParallaxStateFullSize){
-        [self showFullTopView:NO];
+        
+        /*NOTE: Commenting this line prevents automatic showing of the table(top)view for when this is intended to be manualy done*/
+        
+        /*[self showFullTopView:NO];*/
         return;
     }
     
